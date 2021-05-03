@@ -3,6 +3,9 @@
 ![Screen Shot 2021-05-04 at 1 02 42 AM](https://user-images.githubusercontent.com/69442178/116879176-6f64e880-ac74-11eb-8ebf-b8b4bf192ef8.png)
 
 
+**To increase the number of reads two sequencing runs were performed (NZGL01087 and NZGL01900)
+**Demultiplexing and adapator trimming was also performed by the NZGL bioinformatians in 2015
+
 #Primer Trimming
 Paired-end reads containing the primary restriction enzyme were treated as single-end data and were trimmed up to and including the RE sequence using cutadapt. Only reads with a minimum length of 30bp and minimum quality score of 30 were kept for further downstream analysis. Reads were also trimmed from the 3' end to 70bp to maximise mapping efficiency. 
 
