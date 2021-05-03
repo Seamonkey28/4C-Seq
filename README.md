@@ -41,9 +41,13 @@ To remove the self-ligated and undigested fragments
 -find the coordinates based on the primer sequence in the Genome file (Watson strand regardless of primer strand and not including the RE sequence).
 Using R254 VP as an example:
 Use reverse complement (RC) of rev primer for DpnII: 
+
 ![Screen Shot 2021-05-04 at 12 56 20 AM](https://user-images.githubusercontent.com/69442178/116878498-8e16af80-ac73-11eb-81e5-37e561968a01.png)
+
 Find fragments overlapping the R254 reverse primer 
+
 ![Screen Shot 2021-05-04 at 12 59 43 AM](https://user-images.githubusercontent.com/69442178/116878871-0d0be800-ac74-11eb-9cbd-3ecd8849d559.png)
+
 This did not return any overlapping fragments
 
 #Remove reads in unligated control file
