@@ -1,5 +1,8 @@
 # 4C-Seq method using 4Cker
 
+![Screen Shot 2021-05-04 at 7 17 02 PM](https://user-images.githubusercontent.com/69442178/116971185-4fcdce80-ad0d-11eb-9b43-a14ad25b8587.png)
+
+
 **To increase the number of reads two sequencing runs were performed (NZGL01087 and NZGL01900)
 **Demultiplexing and adapator trimming was also performed by the NZGL bioinformatians in 2015
 
