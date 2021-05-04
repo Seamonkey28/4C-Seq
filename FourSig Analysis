@@ -1,0 +1,30 @@
+#Primer trimming
+Paired end reads were treated as single reads and primers were trimmed up to but excluded the RE site using cutadapt in two separate steps.
+cutadapt –g GGATTTTTCAGTTTGCATG –m30 –e0.05 –q 20 –discard-untrimmed  
+cutadapt –g GTATCAGGAGTTACCAGAGTACAGGGAACAGGCACGTGCTTAAGGTTTAGACCTGTGAGCA –m30 –e0.05 –q 20 –discard-untrimmed
+
+Only forward and reverse reads beginning with a primary or secondary RE site were selected for further downstream analysis.
+grep –A 2 –B 1 ‘^CTAG\|^GATC’ in.fastq | sed ‘/--/d’ > out.fastq
+
+As we performed two sequencing runs this gave rise to 8 files per VP, which were concatenated into one file (in this example Rad_R254_R1.fastq), before mapping to the hg19 reference genome.
+1900_2_4C-r-254-BfaI_4C-R-254-DPnII_mat_adtr_prtr1_R1.fastq (GATC)
+1900_2_4C-r-254-BfaI_4C-R-254-DPnII_mat_adtr_prtr1_R2.fastq (GATC)
+1900_2_4C-r-254-BfaI_4C-R-254-DPnII_mat_adtr_prtr2_R1.fastq (CTAG)
+1900_2_4C-r-254-BfaI_4C-R-254-DPnII_mat_adtr_prtr2_R2.fastq (CTAG)
+1087_2_4C-r-254-BfaI_4C-R-254-DPnII_mat_adtr_prtr1_R1.fastq (GATC)
+1087_2_4C-r-254-BfaI_4C-R-254-DPnII_mat_adtr_prtr1_R2.fastq (GATC)
+1087_2_4C-r-254-BfaI_4C-R-254-DPnII_mat_adtr_prtr2_R1.fastq (CTAG)
+1087_2_4C-r-254-BfaI_4C-R-254-DPnII_mat_adtr_prtr2_R2.fastq (CTAG)
+
+#Mapping
+Fastq files were mapped as single-end reads using bowtie2
+Bowtie2 –k 1 –N 0 -x hg19_Index Rad_R254_R1.fastq –S Rad_R254_R1.sam
+
+#Assign reads to fragments
+Sam files were assigned to restriction fragments using the samtoretab script included in the fourSig package.
+perl samToReTab.pl -H 18 2000 20 Rad_R254_R1.sam hg19_dpnii.txt hg19_bfai.txt NONE > Rad_R254_R1.tab
+
+
+
+
+
