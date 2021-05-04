@@ -24,6 +24,44 @@ Bowtie2 –k 1 –N 0 -x hg19_Index Rad_R254_R1.fastq –S Rad_R254_R1.sam
 Sam files were assigned to restriction fragments using the samtoretab script included in the fourSig package.
 perl samToReTab.pl -H 18 2000 20 Rad_R254_R1.sam hg19_dpnii.txt hg19_bfai.txt NONE > Rad_R254_R1.tab
 
+#Data analysis continued in R using fourSig package and script adapt from Judith Marsman
+
+#Read in tab files
+Rad_R254_R1 <- read.delim("Rad_R254_R1.tab")
+Rad_R254_R2 <- read.delim("Rad_R254_R2.tab")
+Rad_R254_Con <- read.delim("Rad_R254_Con.tab")
+
+#Extract reads containing VP +/- 2kb upstream or downtream
+R254_R1.vp = which(Rad_R254_R1$chr==6&Rad_R254_R1$pos>151761000&Rad_R254_R1$pos<151761291)
+R254_R2.vp = which(Rad_R254_R2$chr==6&Rad_R254_R2$pos>151761000&Rad_R254_R2$pos<151761291)
+
+#Extract rows, which also contain reads in the unligated control file
+Rad_R254_Con.over1 = which(Rad_R254_Con$reads>=1)
+
+#Replace rows with reads in VP or control with 0
+Rad_R254_R1[c(Rad_R254_Con.over1,R254_R1.vp),3] = 0
+Rad_R254_R2[c(Rad_R254_Con.over1,R254_R2.vp),3] = 0
+
+#write table into tab file
+write.table(Rad_R254_R1, file = "Rad_R254_R1-VP-Cut.tab" , quote = FALSE, sep = "\t")
+write.table(Rad_R254_R2, file = "Rad_R254_R2-VP-Cut.tab" , quote = FALSE, sep = "\t")
+
+#Identify significant cis reads using a window size of 3 and fdr of 0.01
+sig.w3.Rad_R254_R1 <- fourSig(filename = "Rad_R254_R1-VP-Cut.tab", chr = 6, cis.only = TRUE, window.size = 3, iterations = 1000, fdr = 0.001, fdr.prob = 0.005)
+Rad_R254_R1.w3.bed = readsToWindows(file="Rad_R254_R1-VP-Cut.tab", chr=6, window.size=3)
+saveSigAsBed(sig.data=sig.w3.Rad_R254_R1, filename= "Rad_R254_R1.sig.bed", window.data =  Rad_R254_R1.w3.bed, trackname="Rad_R254_R1.sig")
+
+sig.w3.Rad_R254_R2 <- fourSig(filename = "Rad_R254_R2-VP-Cut.tab", chr = 6, cis.only = TRUE, window.size = 3, iterations = 1000, fdr = 0.001, fdr.prob = 0.005)
+Rad_R254_R2.w3.bed = readsToWindows(file="Rad_R254_R2-VP-Cut.tab", chr=6, window.size=3)
+saveSigAsBed(sig.data=sig.w3.Rad_R254_R2, filename= "Rad_R254_R2.sig.bed", window.data =  Rad_R254_R2.w3.bed, trackname="Rad_R254_R2.sig")
+
+#Indentifying significant interactions between both biological replicates using a minimum overlap of 25%
+bedtools intersect -a Rad_R254_R1.w3.bed -b Rad_R254_R2.w3.bed -f 0.25 -r > Rad_R254_sig.bed
+
+#Select for category 1 and 2 interactions only 
+grep ‘102,0,0’ Rad_R254_sig.bed > Rad_R254_sig1-2.bed
+
+Bed files were then uploaded to UCSC for comparison between RISC and Rad treatment groups
 
 
 
